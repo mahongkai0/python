@@ -1,0 +1,136 @@
+表格的建立，代码如下：
+1
+cursor.execute("create table %s(id char(100))" % tb_name)# 这样写可能报错
+　　其中tb_name就是自己定的表格名称，在使用过程中发现，当表格名称的字符串中带有'-'的时候（如test-abc），
+    会报错，似乎是'-'在MySQL代码中有特殊意义所以让程序误以为这是一个命令。同样的，
+    如果表格的名称与代码语句重复，例如表格名称就叫做'table',也可能使程序报错，
+    因此可以将表格的名称用两个`括起来（注意，这个点不是单引号，而是tab建上面的那个小撇）。
+
+　　修改代码如下：
+
+1
+cursor.execute("create table `%s`(id char(100))" % tb_name)
+　　2.信息的插入，代码如下：
+
+1
+cursor.execute(”insert into `%s`(id) values('%s')” % (tb_name,data))# 这种可能出错
+　　但是我发现，当需要插入的字符串data中含有'（单引号）的时候，程序就会报错，这比较好理解，
+大概就是因为信息里面的单引号和代码的单引号形成了交叉，让代码变得混乱了，这种方式就只能尽量让代码中能够区分单引号的，
+所以我使用了三引号和双引号做区分。修改代码如下：
+
+1
+cursor.execute('''insert into `%s`(id) values("%s")''' % (tb_name,data))
+　　3.信息的错误
+
+　　我设置了一个字段为int，这个字段一般情况下都是整数，但是也可能为空值，所以一当这个值为空的时候就报错。
+
+　　目前的解决办法是将这个字段改为char类型算了。其他方法感觉还不如留空。
+
+
+
+
+import pymysql
+user=input('用户名: ').strip()
+pwd=input('密码: ').strip()
+
+#链接
+conn=pymysql.connect(host='localhost',user='root',password='',database='db2',charset='utf8')      
+                                     #与数据库的服务端建立连接，databases是我们要查询的表所在的数据库
+#游标
+cursor=conn.cursor() #执行完毕返回的结果集默认以元组显示 
+#配置结果集为字典形式
+#cursor=conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+#执行sql语句
+sql='select * from user where username="%s" and password="%s"' %(user,pwd) #注意%s需要加引号，就是一条基本
+                                                            的sql语句,事先要在user表中插入数据，这样查询才会有结果
+print(sql)
+res=cursor.execute(sql) #执行sql语句，返回sql查询成功的记录数目,我只在表中插入一条记录，查询成功最多所以也就一条记录数
+print(res)
+
+cursor.close()
+conn.close()
+if res:
+    print('登录成功')
+else:
+    print('登录失败')
+
+
+
+import pymysql
+'''链接（连接数据库并切换到指定的数据库下）'''
+conn=pymysql.connect(host='localhost',user='root',password='',database='db2')
+'''游标'''
+cursor=conn.cursor()
+
+'''
+执行sql语句
+part1
+'''
+sql='insert into user(username,password) values("liuqingzheng","123456");'
+res=cursor.execute(sql) #执行sql语句，返回sql影响成功的行数
+print(res)
+
+'''part2'''
+# sql='insert into user (username,oassword) values (%s,%s)'
+# res=cursor.execute(sql,("xingxing","123"))                  #执行sql语句，返回sql成功插入的记录数
+# print(res)
+
+'''part3 插入'''
+# sql='insert into user(username,password) values(%s,%s);'
+# res=cursor.executemany(sql,[("xingxing","123"),("yueliang","123"),("taiyang","123")]) #可以同时插入多行记录，执行sql语句，返回sql影响成功的行数
+# print(res)
+
+'''part4 修改'''
+# sql='update user set username=%s , password = %s where id=%s'
+# res=cursor.execute(sql,['love','1314',5]) #执行sql语句，返回sql影响成功的行数,修改记录中id=5，将用户名该为love,密码改为1314
+# print(res)               #成功修改一条记录内容
+
+'''part5 删除'''
+# sql= 'delete from user where id = %s'
+# res=cursor.execute(sql,2)               #删除指定的某一条记录，删除第二掉记录
+# print(res)
+conn.commit() #提交后才发现表中插入记录成功，强调如果没有提交记录是不能插入成功的（增、删、改必须要commit）
+cursor.close()    #关闭游标
+conn.close()      #关闭连接（套接字）
+
+
+
+
+
+
+
+import pymysql
+#建立与数据库的连接
+conn=pymysql.connect(host='localhost',user='root',password='',database='db2')
+
+#创建游标
+cursor=conn.cursor()
+
+#执行sql语句
+sql='select * from user;'
+rows=cursor.execute(sql)            #返回的是表中所有记录的条数
+cursor.scroll(3,mode='absolute') # 相对绝对位置移动，第一个参数是相对绝对位置移动的记录条个数
+# cursor.scroll(1,mode='relative') # 相对当前位置移动，第一个参数是相对当前位置移动的记录条个数
+
+#通过fetchone、fetchmany、fetchall拿到查询结果
+res1=cursor.fetchone()              #以元组的形式，返回查询记录的结果，默认是从第一条记录开始查询
+# res2=cursor.fetchone()            #会接着上一次的查询记录结果继续往下查询
+# res3=cursor.fetchone()
+# res4=cursor.fetchmany(2)           #查询两条记录会以元组套小元组的形式进行展示
+# res5=cursor.fetchall()
+
+#打印查询的最终结果到终端
+print(res1)
+# print(res2)
+# print(res3)
+# print(res4)
+# print(res5)                         #会元组套小元组的形式将表中的左右记录头查询出来展示在终端
+print('%s行数据'%rows)
+
+
+
+
+
+
+

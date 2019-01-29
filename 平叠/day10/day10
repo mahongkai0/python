@@ -1,0 +1,306 @@
+
+
+day09函数回顾
+函数的参数
+ 实参 给  
+    位置参数
+      序列参数
+        关键传参
+          字典关键字传参
+        
+
+形参接收
+接收实参的引用关系  （并不会复制对象）
+
+形参的定义
+  位置形参
+  * 元组形参
+  命名关键字形参
+   **字典形参
+
+全局变量和局部变量
+
+day10
+
+
+globals 和 locals 函数
+globals()  返回当前全局作用域内变量的字典
+locals()   返回当前局部作用域内变量的字典
+示例
+
+a = 1
+b = 2
+c = 3
+def fn(c,d):
+    e = 300
+   ####能否在此处知道有哪些全局和局部变量那
+   print（‘locals()返回’,locals()） 
+fn(100,200)
+
+函数变量
+没有类型 只记地址 
+
+    函数名是变量，它在创建函数绑定一个函数
+
+示例：
+    def f1()：
+        print("f1  bei  diao  yong")
+    
+    f2 = f1 ########注意这里f1末日加括号  
+    f2() ######调用f2绑定的函数 让函数执行
+    f1()
+
+示例
+def f1()：
+    print（“f1”）
+def f2（）:
+    print（‘f2’）
+
+f1,f2= f2,f1  交换两个变量的绑定
+f1()
+
+
+一个函数可以作为另一个函数的实参传递
+ 示例：
+
+def f1():
+    print("f1  beidiaoyong")    
+def f2():
+    print('f2   beidiaoyong')
+def fx(fn):
+    print(fn)                      ############打印f1内建函数
+    fn()                                f1被调用
+
+fx(f1)
+f2(x2)
+fx(print）
+max()  不行   fn（） 无参调用出错
+
+print('程序结束')
+
+案例看懂如下代码
+def myfun（fn）：
+    L=【1,3,5,7,9】
+    return fn（L）
+print（myfun（max）） 9
+print（myfun（min）） 1
+print（myfun（sum）） 25
+
+函数可以做为另一个函数的返回值
+一个函数内部可以用return语句返回另一个函数的引用关系
+
+示例“
+
+def get_function():
+    s = input("您要做的操作：”)
+    if s = "求最大":
+        return max
+    elif s == "求最小"：
+        return min
+    elif s == "求和"：
+        return sum
+    
+L= [2,4,6,8,10]
+f = get_function()
+print(f(L))
+
+函数的嵌套定义
+    函数嵌套定义是指一个函数里用def 语句来创建其他函数的情况 
+示例：
+def fn_outer():
+    print("fn_function 被调用")
+    def fn_inner():
+        print("fn_inner 被调用")
+    
+    fm_inner()
+    print("调用结束")
+fn_outer()
+print("jeishu ")
+
+python 的作用域
+   作用域也叫名字空间  是访问变量时查找变量名的范围空间
+python的四个作用域 LEGB
+    作用域                      英文注释
+    局部作用域                 Local(function)
+    外部嵌套函数作用域          Enclosing function local
+    函数定义所在模块的作用域      globals(module)
+    python 内置模块的作用域       Builtin(python)
+
+作用域示例
+v = 100                      
+def f1():                  ##################### 2222222
+    v = 200
+    print("f1.v=", v)
+    def f2():                        ######################1 11111111局部作用域
+        v = 300 #########################把这行去掉   能执行 结果为200
+        print("f2.v=",v)
+    f2()
+f1()
+print("v=",v)
+
+############# 200            300             10
+
+变量名的查找规则
+    在访问变量时  先查找本地变量  然后是包裹此函数的外部的内部的变量  之后是全局变量  最后是内置标本量 
+    L———— E  ---------G---------------B
+
+
+内建 内置    全局    外部嵌套   局部             
+
+global 语句
+作用：
+ 告诉解释器 global 语句声明的一个或多个 变量  这些变量的作用域 为模块级的作用域  页称为全局作用域
+ 全局声明  global将赋值变量映射到米快文件内部的作用域
+
+ 语法：
+  global 变量1  变量名2..
+  示例
+
+v= 100
+def f1():
+    global v         #声明v为全局变量      
+    v =200              接上 得V =200
+f1()
+print("v=",v)
+                               
+                               
+说明：
+ 1.全局变量如果要函数 内部被赋值 则必须经过全局声明（否则会被认为是局部变量）
+ 2.全局变量在函数内部不经过声明就可以直接访问
+ 3.不能先声明局部变量 再用global声明为全局变量 此做法不符合规则
+ 接上示例
+ def f1()
+    v= 200
+    glabal v   此处汇报语法警告   打印哪个？？？
+    print（v）
+ 
+ 
+ 4.global 变量列表里的变量名不能出现在函数的形象列表里
+
+v= 100
+def fn（v）：                          这一行的v  跟     glabal v 相冲突 产生歧义
+    glabal V           报错
+    v = 200
+    print（v）
+fn（300）
+print（“quanju v=”,v）
+
+
+
+nonlocal 语句
+作用：
+ 告诉解释执行器  nonlocal 声明的变量不是局部变量  也不是全局变量 而是外部嵌套函数内的变量
+ 语法  
+ nonlocal 变量1  变量名2..
+ 示例
+ v = 100
+ def f1():
+    v =200
+    print("函数开始时：f1.v=",v)
+    def f2()：
+########nonlocal v################# 施加效果
+        v= 300           $#########想让外部嵌套函数的v = 300
+    f2()
+    
+
+
+    print("函数结束时：f1.v=",v)      #########承上  想打印300
+f1()
+print("全局的v="，v)
+
+
+说明：
+1.nonlocal  语句只能在被嵌套的函数内部进行使用
+2.对nonlocal 变量进行赋值将对外部嵌套函数作用域内的变量进行操作
+3.当有两层或两层以上函数嵌套时，访问nonlocal 变量只对最近一层的进行操作
+4.nonlocal 语句的变量列表里的变量名 不能出现在此函数的形参列表中
+
+
+def f2()
+    v= 300
+    def f3():
+        nonlocal v
+        v= 400
+    f3()
+    print（f2）          400
+
+
+lambda  表达式（又称匿名函数）
+
+作用：
+    创建一个匿名函数对象
+    语法格式
+        lambda 【函数的形参列表】： 表达式
+        注【】里的内容可以为空
+返回值
+函数对象的引用关系
+
+
+示例：
+def myadd（x，y）：
+    return x + y
+print（“20 + 30 =”，myadd（20,30））
+print（“40 + 50 =”，myadd（40,50））
+######## 写一个一模一样的
+myadd = lambda x，y：x + y
+print（“20 + 30 =”，myadd（20,30））
+print（“40 + 50 =”，myadd（40,50））
+
+再次示例：
+mymax  = lambda * ages： max（args）
+说明：lambda 表达式创建的函数只能包含一条表达式
+lambda  比函数简单且可以随时创建和销毁  有利于减少程序的偶合度（为程序模块之间的关联程度） 
+ 
+
+
+eval 和 exec函数
+eval 函数：
+作用：
+把一个字符串当成一个表达式来执行  返回表达式执行后的结果
+格式：
+    eval（source，global =None， local =None）
+参数   
+source  用于执行的表达式字符串
+global 用于描述source执行的全局变量环境的字典
+local 用于描述source执行的 局部 变量环境的字典
+示例：
+
+s1= ”1 +2 * 3“   # 是符合python语法规则的字符串  如 1 加2 +3  不能
+s2= ”x+ y“
+v = eval（s1）
+print（v） #  7
+
+如果s2= ”x+ y“                        
+下面定义 x = 100
+y = 200
+那么eval得出 300   #
+如果  v3= eval（s2,{'x'：10，’y‘：20}）
+ 依赖字典 得出三十
+如果子典里只有一个元素
+
+v3= eval（s2,{'x'：10，’y‘：20}，{’y‘：2}）
+               全局作用域          局部
+                优先局部
+
+
+exec函数
+作用 
+把一个字符串当成程序来执行
+格式
+exec(source,global=None,local =None)
+
+exec 用于执行的表达式字符串
+global 用于描述source执行的全局变量环境的字典
+local 用于描述source执行的 局部 变量环境的字典
+
+如：
+exec(字符串)
+
+
+
+
+
+
+
+
+

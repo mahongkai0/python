@@ -1,0 +1,478 @@
+
+
+
+1.插入操作
+    insertOne() 插入一条
+    insertMany() 插入多条文档
+    insert（）  可以插入多条或者一条文档
+    save  当_id冲突会覆盖原有文档
+
+2.查找操作
+    query的用法
+        操作符使用
+        比较：$eq $lt $gt $lte $gte $in $nin $and $not $or $nor
+        其他： $exists  $mod   $type
+
+    数据处理函数
+        pretty()    格式化显示
+        limit() 显示前几条
+        skip()  逃过
+        sort() 排序
+        distinct（）
+
+3.删除操作
+    deleteOne(query)    删除一条数据
+    deleteMany（）删除多条
+    remove（）
+    findOneAndDelete（） 查找并删除
+
+
+###########################################################################################
+修改操作
+    mysql 
+        update table set  .. where  ...
+    mongo
+        db.clooection.updateOne（query，update，upset）
+        功能： 修改第一个符合条件的文档
+        参数：query 筛选条件 用法同find query
+            update 要修改的数据项  需要配合修改操作符使用
+            upset  bool类型  默认表示没有复合筛选条件的文档则不做任何的操作
+                    如果设置为True 则没有筛选到文档
+                    就根于query和update插入文档
+
+        eg   将joy年龄修改为18
+        db.class0.updateOne({name:'joy'},{$set:{age:18}})
+
+        eg 第三个参数功能  当他为true并且前面找不到时也就是说没有复合query的条件时  插入进去
+        db.class0.updateOne({name:'Han'},{$set:{age:20}},{upsert:true})
+
+
+
+
+
+        db.collection.updateMany（query，updrae，upsret）
+        功能：修改所有复合条件
+        参数：同上
+
+        eg 同时修改所有复合条件的文档
+        db..class0.updateMany({age:{$lt:18},{$set:{age:20}}})
+
+    
+    
+        db.collection.update(query,update,upsert,limit)
+         功能; 修改筛选到的文档
+         参数：     query 筛选条件
+                    update 修改内容
+                    upsert 如果是true则可插入新的文档
+                    mulit 默认表示只修改第一条符合条件的文档
+                            设置为true表示修改多条
+
+        eg  修改所有人年龄为10岁
+        db.class1.update({},{$set:{age:9}},false,true)
+
+
+       
+       db.collection.findOneAndUpdate(query,update)
+        功能： 查找一个文档并修改
+        参数：query筛选条件
+                update  修改内容
+        返回：返回修改之前的文档
+
+        eg   修改名称为Lily 的人 返回他原先的年龄 再查看年龄变为修改指
+        db.class0.findOneAndUpdate({name:'Lily'},{$set:{age:17}})
+
+
+
+
+        db.collection.findOneAndReplace(query,doc)
+        功能;查找并替换一个文档
+        参数：  query筛选条件
+                doc  替换的东西
+        返回; 返回原有文档
+
+        eg  将原有Abby文档替换掉 形成后面新的文档 
+        db.class0.findOneAndReplace({name:'Abby'},{'name':'张三',age:17,sex:'w'})
+
+
+
+
+
+
+    修改器的使用
+
+        $set    修改一个域的值 或者添加一个域
+
+        eg: 查看name这个域是否存在 不存在加上
+        db.calss0.updateOne({name:{$exists:false}},{$set:{name:'Han'}})
+
+        $unset  删除一个域 后面用空字符串
+        eg.查看name中han 删除后面的这个age域
+        db.class0.updateOne({name:'Han'},{$unset:{age:''}})
+        
+
+    $rename   :   修改一个域的域名
+
+
+    eg   修改所有sex域名为gender
+    db.class0.updateMany({},{$rename:{sex:'gender'}})
+
+
+    $setOnInsert ；  当upsert插入文档时 作为补充的插入内容
+
+    eg 当Hun 存在 时 $setOnInsert内容不发挥作用 只修改set 当存在时hun时  一起成立  同时释放
+    db.class0.update({name:'Hun'},{$set:{age:18},$setOnInsert:{gender:'w'}},{upsert:true})
+
+可以同时书写许多修改器
+#########################################################################
+
+    $inc     加法修改器
+    eg  年龄都加一
+
+    db.class0.updateMany({},{$inc:{age:1}})
+
+    $mul  乘法修改器
+
+    eg  将hun的年龄乘以2
+    db.class0.updateMany({name:'Hun'},{$mul:{age:2}})
+
+    可以同时乘小数 整数   负数   
+##############################################################################
+
+
+    $max
+        指定某个域的值 如果小于规定值，则修改为规定值，大于规定值则不变
+        eg 如果年龄小于18 则改为18，大于则不变
+        db.class0.updateMany({name:'TOM'},{$max:{age:18}})
+
+
+    $min  指定某个域的值 如果大于规定值，则修改为规定值，小于规定值则不变
+
+    eg
+    db.class0.updateMany({age:17},{$min:{age:15}})
+
+
+
+数组修改器
+        $push 向数组中增加一项
+        eg  
+
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        db.class1.updateOne({name:'小红'},{$push:{socre:86}})
+
+
+    $pushAll 想数组中增加多项
+        
+        eg  向数组中增加两项
+        
+        db.class1.updateOne({name:'小红'},{$pushAll:{socre:[5,10]}})
+
+    
+    
+    
+    $pull  删除数组中的某一个值
+    
+    eg   删除小红数组中的一个值
+    db.class1.updateOne({name:'小红'},{$pull:{socre:5}})
+
+
+    $pullAll  同时删除多个值
+    
+    eg  删除小红数组中的两个
+        db.class1.updateOne({name:'小红'},{$pullAll:{socre:[88,10]}})
+
+    $pop  从数组中弹出一项
+            1从后面弹  -1从前面弹 （删除）
+        eg  ：
+        db.class1.updateOne({name:'小明'},{$pop:{socre:1}})
+
+
+
+
+
+    $addToSet  :向数组中添加一项    不能添加已有的
+            
+    eg  向数组中添加81 
+    db.class1.update({name:'小明'},{$addToSet:{socre:81}})
+
+
+
+    $each  对多个值进行逐一操作
+    eg： 逐一操作 不用$pushall
+    db.class1.updateOne({name:'小红'},{$push:{socre:{$each:[90,10]}}})
+
+
+    $position   指定值的插入位置  配合each
+    eg 插入在第【0】个位置 将50
+    db.class1.updateOne({name:'小明'},{$push:{socre:{$each:[50],$position:0}}})
+
+
+    $sort 对数组排序
+    eg  对小明进行排序  $each：[] 为空时也得写 不为空时 插入排序
+    db.class1.updateOne({name:'小明'},{$push:{socre:{$each:[],$sort:1}}})
+
+
+
+    时间类型    
+        获取当前时间：，
+       
+        1.new Date() 自动生成当前时间
+       
+            eg:db.class1.insertOne({book:'Python',date:new Date()})
+
+       
+        2，ISODdat() 自动获取当前时间
+        
+            eg:db.class1.insertOne({book:'Python',date:ISODate()})
+
+        3，Date()  /获取系统当前时间
+
+            db.class1.insertOne({book:'Python',date:Date()})
+
+        存储任意时间
+        ISODate（） 
+        功能;将指定时间字符串转为Mongodb时间存储
+        参数：指定时间
+            '2019-01-01 12:12:12'
+            "20190101 11:11:11"
+            "20190101"
+        eg: 手动添加时间
+            db.class1.insertOne({book:'Python之美',date:ISODate("2018-11-20 20:58:30")})
+
+时间戳
+    valueOf()
+    功能： 将ISO date  转换为时间戳
+        
+        
+        eg： 记录1970.1.1 00:00:00到现在多少毫秒
+            db.class1.insertOne({book:'大风雷',date:ISODate().valueOf()})
+
+
+    Null 类型数据
+        值：   null
+        1.表示某个域值为空
+
+        eg：
+            db.class1.insertOne({book:'Python放生',price:null})
+###################################################db.class1.find({price:null},{_id:0}) 自己试验
+    Object类型
+
+        文档中某个域的值还是文档  则该值为Object
+        
+         eg：  db.class3.insertOne({name:'老舍',book:{title:'猫',money:8}})
+        
+        --------------------------------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------
+        查询时这酱紫：db.class3.find({'book.title':'猫'})
+                      必须用引号引     前面     的部分
+                修改也是 db.class3.updateOne({'book.title':'猫'},{$set:{'book.money':100}})
+
+    -----------------------------------------------------------------------------------------------
+    ------------------------------------------------------------------------------------------------
+
+通过数组下标直接用数组项
+    eg：
+            db.class1.update({name:'小明'},{$set:{'socre.1':67}})
+            db.class1.find({'socre.0':98})
+
+
+练习：
+
+    基于之前的grade数据库
+    1.将小红的年龄修改为8岁 兴趣爱好变为跳舞 画画
+    db.class.updateOne({name:'小红'},{$set:{age:9,hoppy:['draw','dance']}})
+    
+    
+    2.追加小明兴趣爱好为唱歌
+    db.class.updateOne({name:'小明'},{$push:{hobyy:'sing'}})
+    
+    
+    3.小王多了兴趣爱好吹牛 打篮球
+    db.class.updateOne({name:'小王'},{$pushAll:{hobyy:['sing','吹牛']}})
+    
+    
+    4.小李兴趣多了跑步唱歌 但是注意不要和已有的重复
+    db.class.update({name:'小李'},{$addToSet:{hobyy:{$each:['running','sing']}}})
+        
+
+    5.班级所有同学年龄加1
+    db.class.updateMany({},{$inc:{age:1}})
+   
+   
+    6.删除小明sex属性
+    db.class.updateMany({name:'小明'},{$unset:{sex:''}})
+    
+    7.删除小李兴趣中的第一项
+    db.class.updateOne({name:'小李'},{$pop:{hobyy:-1}})
+    
+    
+    8.删除小红兴趣画画和唱歌,
+    db.class.updateOne({name:'小红'},{$pullAll:{hobyy:["draw","dance"]}})
+    
+    
+    9.为小王增加一个域 备注 ：{民族:'回族',习俗:'不吃猪肉'}
+    db.class.update({name:'小王'},{$set:{备注:{民族:'回族',习俗:'不吃猪肉'}}})
+    
+    
+    10.在小王备注中增加一项宗教;伊斯兰教
+    db.class.update({name:'小王'},{$set:{'备注.宗教':'伊斯兰教'}})
+
+
+
+
+索引   
+
+    什么是索引
+        索引是建立文档所在位置的查找清单  使用索引可以方便的进行快速查找  减少遍历次数 提高查找效率
+
+    索引约束
+        1.索引本身也占有数据库空间 所以当数据量很小时 没有必要创建索引
+
+        2.索引表需要根据数据的修改及时修改，否则索引就不和内容配套，失去了意义 因为如果数据库操作时
+            频繁的写操作而不是查找操作就不适合创建索引
+
+        
+创建索引
+    db.collection.createIndex(index，option)
+    功能： 创建索引
+    参数;   索引域 和索引选项
+    eg  为name域创建索引
+         db.class0.createIndex({name:1})  
+  
+    *_id   域会自动生成索引 该索引不能删除
+    * 1表示正向索引  -1表示逆向索引
+    *一个集合中不能创建重复的索引
+
+    
+     查看当前索引 
+
+     db.collection.getIndexes()
+
+     eg:   0000
+
+    修改索引名称
+    db.collection.createIndex({age:1},{name:'大'})
+    db.class0.createIndex({age:1},{name:'大'})
+
+
+    其他索引创建方法
+        ensureIdex()
+        功能：创建索引
+        参数：同createIndex
+
+
+    createIndexes([{},{},{}....])
+    功能：同时创建多个索引
+    参数；数组中填写多个索引项即可
+        eg：同时创建三个索引
+            db.class0.createIndexes([{name:1},{age:-1},{gender:-1}])
+
+    删除索引
+        db.collection.dropIndex()
+        功能;删除一个索引
+        参数：索引名或者键值对删除
+        
+        eg：通过键值对与名称删除
+            db.class0.dropIndex("大")
+            db.class.dropIndex({name:1})
+            
+
+    db.collection.dropIndexes()
+    功能;删除所有索引（除了_id）
+        
+        
+        eg 删除索引索引方法
+            db.class0.dropIndexes()
+
+    索引类型
+
+        复合索引： 根据多个域创建一个索引
+
+        e.g 根据 name  age  两个域创建一个索引
+            db.class0.createIndex({name:1,age:-1})
+
+
+    子文档和数组索引：如果对某个域创建索引 该域的值为子文档或者数组，则对数组或者子文档中某一项进行查找也是索引查找
+
+    eg ：如果对book创建索引，则该查找也是索引查找
+        db.class0.find({'book.title':'围城'})
+
+    唯一索引
+        要求创建索引的域不能有重复的值
+        eg：创建唯一索引（要求name不能重复）
+        db.class0.createIndex({name:1},{unique:true})  再插入相同的数据的话会报错
+
+    稀疏索引： 会在创建索引时忽略没有指定域的文档
+          
+          eg:对gender创建稀疏索引
+          db.class0.createIndex({gender:1},{sparse:true})
+  
+
+聚合操作
+
+        对文档数据进行整理筛选统计
+        db.collection.aggregate()
+        功能：完成集合操作
+        参数：聚合条件，需要配合聚合操作符
+
+
+        聚合操作符
+
+        $group  分组聚合 往往需要配合一定的统计操作符完成
+
+        统一求和 $sum
+                > db.class0.aggregate({$group:{_id:'$gender',num:{$sum:1}}})
+
+作业：熟练
+使用修改操作和索引操作
+.mysql修改练习使用mongo完成
+3.      查文档$avg        $project
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

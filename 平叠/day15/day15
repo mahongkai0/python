@@ -1,0 +1,228 @@
+
+day14回顾
+
+异常   异常是一种错误通知机制（信号通知），可以快速的将错误信息传递给调用者
+try except  语句
+捕获异常  将异常改为正常状态
+
+try finally 
+能保证在正常或异常都能执行必须要执行的语句
+
+raise  语句
+发出异常通知  把程序转为异常状态  
+
+asseryt 语句
+当条件不满足时 触发AssertionError 类型的错误通知
+
+迭代器 iterator
+iter
+next
+没有值时会触发StopIteration
+
+
+day15笔记
+生成器 Generator
+    生成器是能够动态提供数据的可迭代对象
+    生成器在程序运行时生成数据 与容器类不同 他通常不会在内存保存大量的数据  而是现用现生成
+
+生成器的种类有两种：
+    生成器函数
+    生成器表达式
+生成器函数：
+    含有yield 语句的函数式生成器函数  此函数被调用将返回一个生成器对象
+    yield  翻译为产生（或生成） （读又得）
+yield 语句
+语法：
+    yield表达式
+说明：
+    yield 用于def 函数中，目的是将此函数作为生成器函数使用
+    yield 用来生成数据  供迭代器的next（it）  函数使用
+示例见‘
+myyield.py
+
+
+生成器函数说明：
+    生成器函数调用将返回一个生成器对象  生成器对象是一个可迭代对象
+    生成器对像通常是一次性的  通常不可重复使用
+    在生成器函数调用return 会触发一个StopIteration的异常（即生成数据结束）
+示例
+myinteger.py
+
+生成器表达式
+    语法：
+    （表达式 for 变量 in 可迭代对像 【if 真值表达式】）
+     说明：
+     if 子句可以省略
+     作用：
+     用推导式形式创建新的生成器
+    示例：
+gen = (x ** 2 for x in range(1,5))
+it = iter(gen)
+next(it)
+
+生成器说明：
+    生成器即是可迭代对象 同时他自身也是迭代器
+
+
+
+迭代工具函数
+    迭代工具函数的作用是返回一个可迭代对象
+
+函数                   说明
+zip（iter1，iter2，iter3，...）  返回一个zip生成对象
+    此对象生成一个元组 此元组数据分别来自于iter1，iter2，...
+    可迭代对象提供的数据个数由最小的可迭代对象参数决定
+enumerate（iterable,start = 0） 创建一个enumerate生成器对象，此对象生成类型为索引
+（索引，值）对的元组，默认索引从0开始
+也可以用start指定
+
+zip 示例： 生成字典较为方便如 d = dict（zip（names，number））
+numbers = [10086,10000,10010,95588]
+names = [‘中国移动’，’电信‘，’联通‘]
+for t in zip(nambers,names):
+    print(t)
+(10086,'中国移动')
+(10000,’电信‘)
+(10010,’联通‘)
+for name，numb in zip（nambers,names）：
+    print（name，‘客服电话是’,nub）
+
+示意zip函数的内部实现原理
+
+见例子
+
+enumerate  函数示例
+    names = ['中国移动'，‘中国联通’，‘中国电信’]
+    for t in enumerate（iterable）：
+        print（t） # （0，‘中国移动’）（1，‘中国联通’）
+    for t in enumerate(names,101)
+        print(t)  编号从101开始
+    
+ #_________________________________________________   
+    
+    
+    for index, name in enumerate(names):
+        if name == '中国联通'
+        del name[index]
+        break
+ 通过索引删除
+_______________________________________________________
+
+
+容器
+
+列表 list
+字符串str
+字典 dict
+元组 tuple
+集合set
+固定集合frozenset
+
+序列：
+    str list tuple bytes，bytearray
+字节串 butes
+字节数组bytearray
+
+子节串也叫字节序列
+    作用：
+        存储以字节为单位的数据
+        子节串是不 变的字节序列
+
+字节 （byte）
+    字节是由八个位（bit）组成的存储单元
+    一个字节表示的范围是0到255，用来表示一个字节的取值
+
+创建空字符串的字面值
+b ''
+b ""
+b''''''
+b """"""
+创建非空字节串的子面值
+B=b'ABCD'
+B=b"ABCD"
+B=b'\x41\x42\x43\x44'
+
+
+字节串的构造函数 bytes
+bytes（）生成一个空的字符串 等同于b‘’
+bytes（整数可迭代对象） 可迭代对象生成一个子节串  #######   0到255之间的整数
+bytes（整数n） 生成n个值为0的字节串
+bytes（字符串，encoding=‘utf-8’）  用字符串的转换编码
+    生成一个字节串
+    示例：
+    B= bytes()  # B=''
+    B = bytes([65,66,67,68])   # B= 'ABCD'
+    B=butes(5) # B ='\x00\x00\x00\x00\x00\x00\'
+    B = bytes("hello",'utf-8' )   B= b'hello'
+    B= bytes("ABC中文",'utf-8') len(B) =9
+
+    字节串的运算                     
+    + += * *=
+    < <= >= == !=
+     in / not in 
+     索引/切片
+
+示例：
+B = b'ABC123'  min(B)  = 49  不是1
+b'12' in B  # True 
+65 in B   # True
+print(B[2])  # 67
+
+print(B[0::2])  #b'AC2'
+
+
+
+能用于字jie串和字节数组的函数 
+len ，max min sum  any all  
+
+bytes 与str 的区别
+bytes 存储字节（0·255的整数）
+str 存储unicode字符（0~65535~0x10FFFF的整数）
+
+bytes 与str 转换
+            编码（encode）
+    str ---------  bytes  
+        b =s.encode(encoding = ‘utf- 8’）
+
+            解码（decode）
+
+        bytes ----str 
+        s = b.decode(encoding = 'utf - 8')
+示例：
+    s = 'ABC中文'
+    b=s.encode()  # 用utf -8编码规则转为字符串
+    s2 = b.decode（）  #  用 utf - 8编码规则解码为字符串
+    print（s == s2）  # True
+
+
+字节数组 
+bytearray 
+可变的字节序列
+
+
+构造函数
+bytearray() 创建空的字节数组
+bytearray(整数可迭代对象)
+bytearray（整数n）
+bytearray（字符串，encoing = ‘utf-8’）
+    （以上参数规则同字符串的规则 返回类型为bytearray）
+运算
+
+     + += * *=
+     < <= > >= !=
+    in / not in 
+    索引/切片 
+      注：字节数组支持索引 和切片的赋值  规则同列表的索引和切片赋值
+
+示例：
+ba = bytearray([65,32,67,100,69])
+b [1] = 66
+ba[3] ==68
+
+
+
+
+
+
+
+

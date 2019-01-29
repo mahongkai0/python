@@ -1,0 +1,411 @@
+
+
+1.什么是正则表达式 
+2.元字符
+3.正则表达式转义 贪婪 分组
+4.正则表达式匹配原则
+
+
+
+
+regex对象属性
+
+pattern 获取正则表达式
+flags    标志位
+groupindex  获取捕获组组名和组序号的字典
+groups      获取有多少子组
+
+
+#获取正则表达式
+regex = re.compile(r'abc')
+regex.pattern
+'abc'
+
+regex = re.compile(r'abc',flags = re.I)
+regex.flags
+32
+
+regex = re.compile(r'(ab)cd(?P<piglet>ef)')
+>>> regex.groups
+2
+
+>>> regex = re.compile(r'(ab)cd(?P<piglet>ef)')
+>>> regex.groupindex
+mappingproxy({'piglet': 2})
+
+
+match对象属性和方法
+
+
+属性变量
+
+
+
+pos#            目标字符串的开始位置
+endpos          目标字符串的结束位置
+re              正则表达式
+string          目标字符串
+lastgroup       最后一组的名称 如果没有  就是None
+lastindex       最后一组的第几组
+
+
+
+属性方法
+span()      #得到匹配内容的起止位置
+start()     #得到匹配内容的开始位置
+end()       #得到匹配内容的结束位置
+
+
+group()     #获取match对象的对应内容      
+功能：获取match对象的对应内容    
+
+参数：      默认为０表示获取正则表达式整体匹配到的内容　
+        如果为序列号或者子组名称则表示获取对应子组的匹配内容
+
+返回值：返回对应的内容
+
+groupdict() #获取捕获组子典
+groups()    #获取所有子组对应内容
+
+
+
+
+
+
+
+
+flags 参数使用
+
+    *re调用函数最后一个参数通常为flags 用以丰富正则的匹配功能
+    I == IGNORECASE 匹配时忽略字母大小写
+
+    A == ASCII      只能匹配ascii字符
+
+    S == DOTALL     作用域元字符“.” 使其可以匹配\n
+
+    M == MULTIKINE   作用域^$使其可以匹配每行的开头结尾 
+
+    X == VERBOSE       可以给正则表达式每行加#号注释
+
+
+                re.I|re.X
+
+
+GIT  代码协同管理工具
+
+代码管理工具应用：
+
+    *防止代码丢失 做代码备份
+    * 代码的版本控制 可以设置多个节点 在多个版本间切换
+    *可以方便团队开发 更好的做代码管理
+    * 可以方便产品迭代
+
+什么是git 
+
+    git 是一个开源的分布式版本控制系统，可用于高效的管理大小项目
+
+    分布式和集中式：
+
+    分布式：每个节点都保存代码 没有明确的中央服务器  节点之间相互推送共享代码
+    集中式：代码由中央服务端集中管理 为每个节点分配权限 每个节点统一上传到中央服务器，或者从服务器下载
+
+    git特点
+
+    * git 可以管理各种文件 特别是代码项目  多在*nix系统使用
+
+    * git 是分布式 不同于svn的集中式 这是git和svn最大的差别
+
+    * git是开源系统，可以脱网使用，数据传输速度快
+
+    * git更好的支持分支协作，分布式代码更安全
+
+    git 安装
+
+    sudo apt-get instll git
+
+    git 配置命令
+
+    git confip  
+
+    配置级别：
+        1.系统中所有用户都可使用该配置
+            命令： git config --system
+            配置文件;   /etc/gitconfig
+
+        2.当前用户可使用该配置
+            命令： git  config --global
+            配置文件： ~/.gitconfig
+
+      ：
+       
+        
+        3.当前项目可使用该配置  必须在项目目录下执行
+            命令：git config
+            配置文件：  project/.git/config
+
+
+配置内容：
+    1.配置用户名
+        eg 配置用户名 Tedu
+            git  config --global user.name Tedu
+
+    2.配置邮箱
+        eg： 配置邮箱
+            sudo git config --system user.email 2435086463@qq.com
+
+    3.配置编译器
+        e.g 编译器配置
+        git config core.editor vscode
+    4.查看项目配置
+        git config --list
+
+
+git的基本命令
+
+1.初始化仓库
+    git init
+
+    * 在某个目录下初始化仓库后自动产生.git目录 则该目录变为一个git仓库  在该目录下的所有文件都可以使用git管理
+
+
+    工作区：用于用户对项目文件的各种直接操作即项目目录操作
+    
+    暂存区：用于记录用户对工作区的各种修改，以便同步到本地仓库中
+
+    git仓库：  用于存储备份工作区的内容，方便git进行管理
+
+
+2.查看分支状态
+    git status
+
+    分支：在git仓库中一个独立的工作环境，不影响其他分支操作，git仓库初始默认工作分支为master
+
+
+3.文件提交到暂存区
+
+    git add [file]      同时写多个 后面写文件file 时
+                    用空格隔开就行  
+                提交所有的话用 git add * 或者 .
+                                                            
+                    隐藏文件 必须明确指出
+
+    * 提交内容可以是普通文件也可以是目录
+    * 暂存区只是做工作区的提交修改记录，并不是将文件备份存储
+    
+
+
+######################################################################################
+    取消某个文件的暂存记录
+    git rm --cached begin.py
+
+#########################################################################################
+
+4.将文件同步到本地git仓库
+                    add 文件名
+    git commit -m "some message"        "first commit"
+
+    * 同步要添加说明 而且只能同步已经提交到暂存区内容
+
+    将仓库文件恢复到工作区
+        git checkout -- begin.py
+
+5.查看commit日志
+
+    git log
+    git log --pretty=oneline   查看单行日志
+
+6.查看本地文件和仓库差异
+
+    git diff 【file】
+ 
+
+7.从仓库恢复文件到工作区
+    git checkout 【file】
+
+
+8.文件的移动和删除
+
+    git mv 【file】 移动文件
+    git rm  【file】  删除文件
+
+
+    与add操作相同 ，即将文件移动删除提交到暂存区
+    
+    如：把百度下的begin移动到当前文件夹
+        git rm baidu/begin.py .
+
+
+作业：总结正则表达式的应用
+    2.申请github账号   github.com网站
+    3.httpserver 第二版复习
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

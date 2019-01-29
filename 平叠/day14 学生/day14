@@ -1,0 +1,307 @@
+
+
+
+day14 
+回顾
+
+自定义模块
+xxx.py
+导入方式：
+import 语句
+from import 语句
+from import * 语句
+搜索路劲顺序
+1.查找内建模块
+2.查找工作路径
+3.查找sys。path里指定的路径
+预置的变量（属性）
+__doc__   #绑定文档字符串
+__name__    # 绑定模块名 当为主模块时 绑定__main__
+__file__   #绑定文件的路径名
+
+__all__ 列表
+__all__ =['var1','var2']
+在用from import *语句时  只导入列表中的变量（属性）
+隐藏属性
+以_开头的全局变量为隐藏属性
+from import * 语句
+
+包
+包含有一些列的模块或子文件夹
+导入语句
+绝对导入
+import 语句
+    import mypack.games.contra 【as c】 
+from import 语句
+    from mypack.games.contra import play
+from import * 语句
+    from mypack.games.contra import *
+相对导入
+from .import context
+from ..office.word import *
+
+
+两个模块
+sys   randow  
+
+
+sys :
+sys.path   #模块的搜索路径
+sys.platfrom #操作系统平台的信息
+sys.exit（） 退出程序
+sys.getrecursionlimit（）  得到的最大的递归深度
+sys.setrecursionlimit（）   设置
+
+
+
+
+
+
+
+
+
+day14笔记
+
+异常（基础） Exception
+
+错误是由于逻辑或语法等导致一个程序无法正常执行的问题
+
+错误特点：
+ 有些错误无法预知
+
+什么是异常：
+    异常是程序出错时标识的一种状态
+    当异常发生时 程序不会再向下执行 而转去调用此函数的地方处理此错误并回复为正常状态
+
+
+try  语句的两种状态
+try- except 语句
+try -finally 语句
+try -except 语句的语法
+    try：                          必须有try  except至少一个
+        可能触发的异常
+    except 错误类型1 【as 变量1】                  
+    异常处理语句1
+    except 错误类型2 【as 变量2】
+    异常处理语句2
+    except （错误类型3，错误类型4） 【as 变量3】
+    异常处理语句3
+    ...
+except：             #################### 如果上面都不匹配         
+    异常处理语句other
+else：
+    未发生异常语句       ####################此语句在未发生异常时执行
+finally： （最终）         不管异常正常 只要放在这里都会被执行             
+    最终语句    此语句在离开try时一定会被执行
+
+python3 中内建的全部错误类型
+参见文档
+
+
+
+作用：
+    偿式捕获异常  得到错误通知  将程序由异常流程转为正常流程并继续执行
+说明：
+    as 子句是用于绑定错误对象的变量  可以省略
+    except 子句可以有一个或多个 
+
+try - finally 语句
+语法
+    try：
+        可能触发异常的语句
+    finally：
+        最终语句
+说明
+    finally 字句不可以省略
+    一定存不在except字句
+作用
+    通常用try-finally语句来执行触发异常时一定要执行的语句
+    无论异常是否发生 finally 子句都会执行
+    try-finally 语句不会改变程序的（正常/异常状态）
+
+示例
+
+try_finally
+
+
+raise 语句
+作用：
+触发一个错误 让程序进行异常状态
+发送错误通知给调用者
+语法：
+    raise 异常类型
+    或
+    raise 异常对象       如   e = ValueError（“ddd”） |||    raise e  ||||  except ValueError as e ：||| print（e）
+    或
+    raise  #重新触发上一次异常
+说明：
+
+    raise 无参调用通常用于try-except的except的子句中
+示例见
+raise.py
+
+
+assert 语句（断言）
+语法
+    assert 真值表达式 错误数据（通常是字符串）
+作用：
+    主动监测错误并尽早触发错误
+说明：
+    当真值表达式为False时，用错误数据创建一个AssertionError
+    类型的错误  并进入异常状态
+等同于：
+    if bool（真值表达式） ==False：
+    raise AssertionError（错误数据）
+示例见：
+    assert.py
+
+异常小结；
+    语句有四条
+    try-except 语句
+        作用：用来接受错误通知并处理错误（异常转正常）
+
+    try-finally 语句
+        作用：执行必须要执行语句（不会转换程序状态）
+    raise 语句
+        发送错误通知，让程序进入异常流程
+    assert 语句
+        根据条件发送AssertionError 类型的异常通知 让程序进入
+        异常流程
+        
+
+为什么要用异常处理机制
+    在程序调用层数较深时 向主调函数传递错误信息需要层层return
+    返回比较麻烦  所以需要异常处理机制
+示例见：
+    except.py
+
+迭代器      Iterator
+    什么是迭代器
+        迭代器是访问可迭代对象的工具
+        迭代器是指用iter（obj）函数返回的对象（实例）
+        迭代器可以用next（it） 函数获取可迭代对象的数据
+跌代器相关的函数
+    iter（iterable） 从可迭代对象中返回一个迭代器 iterable
+                        必须是一个能提供迭代器的对象 
+    next（iterator）从迭代器iterator 中获取一个记录 如果无法获取下一条记录 则会触发StopIteration异常通知
+
+iterable 
+
+
+说明：
+
+    迭代器只能往前取值 不会后退
+    用iter 函数可以返回一个可迭代对象的迭代器
+示例见：
+迭代器
+<>  表示的对象
+
+##迭代器
+L= [1,3,5,7]
+it = iter(L)  # 从对象  L 中获取迭代器 然后用it变量绑定
+
+print(next(it)) # 1
+print(next(it)) # 3
+print(next(it)) #5
+print(next(it)) # 7
+
+print(next(it)) #StopIteration异常
+
+it = iter(range(1,10,3))
+#1 #4 #7 
+
+用迭代器函数iter 和next 访问可迭代对象的示例见：
+    iterator.py
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
