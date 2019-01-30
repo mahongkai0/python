@@ -76,7 +76,200 @@
     
         git merge 【分支名字】
         * 在master 分支执行该命令 即将其他分支内容集合到master
-        
+        * 当合并分支产生冲突时 需要手动更改提交
+
+    4.删除分支
+        git branch -d 【branch_name】 
+
+    - 如果分支没有被合并 用 -D 强制删除
+
+帮助文档
+    git help【命令名称】
+
+远程苍库
+    远程仓库：即远程主机上的git仓库  实际git为分布式结构 每台主机git仓库都相似 只是把其他主机中的git
+            仓库称为远程仓库
+
+        1.创建共享远程仓库
+            [1] 创建仓库名称 设置目录属主
+            mkdir gitrepo
+            chown   tarena:tarena gitrepo
+
+            [2]将仓库目录使用   --bare 初始化，给仓库其名称
+            cd gitrepo
+            git init ---bare spyder.git
+            
+            【3】设置spyder.git 目录属主与项目目录相同
+            chown -R tarena:tarena spyder.git   
+
+        2.远程仓库连接协议
+            * 本地协议
+                直接通过一个路径连接一个项目仓库
+                e.g   /opt/git/project.git
+                      file:///opt/git/project.git
+            
+            * ssh协议
+                通过ssh协议方式连接远程
+                eg  ssh://user@server:/porject.git
+                    user@server:/project.git
+
+
+                                                user  用户名  
+                                                porject.git  是服务器地址 
+
+
+            * git协议
+            * HTTP/HTTPS协议
+                eg: http://example.com/porject.git
+
+
+
+        3.添加远程主机仓库
+            git remote add origin
+            tarena@127.0.0.1:/home/tarena/gitrepo/spyder.git/
+                * 该命令必须在某个git项目目录下运行
+
+
+            删除远程主机： git remote rm 【远程主机名称】
+
+
+        4. push将本地分支推送到远程
+
+            将本地的 master 分支推送到远程
+            git push -u origin master
+
+            * -u 表示本地master和远程，master建立追踪关系
+                这样后面本地分支改后再向远程推送可以省略分支名
+
+            向远程推送标签
+            git push origin v1.0    某一个标签
+            git push origin --tags 所有标签
+
+            删除远程分支
+            git push origin --delete Tom
+
+
+        5.clone远程仓库项目
+        git clone tarena:127.0.0.1:/hometarena/gitrepo/spyder.git
+
+
+        6.从远程仓库获取代码到本地
+            git pull
+        自动从远程分支拉取代码合并到本地的对应分支
+
+            git fetch
+            *将远程分支获得本地仓库  但是不合并到本地分支
+
+            * 可以通过 git branch -r 查看拉取的远程分支然后使用git merge 命令有选择的合并到本地
+
+
+    github使用
+
+        什么是github  是一个开源项目社区网站  
+                    拥有全国最多的开源项目  开发者可以注册网站 建立自己的git仓库
+                    然后可以同步管理自己的项目代码。git死gitub唯一指定管理工具
+
+                网址： htt://github.com
+
+    从github获取项目
+        1.从左上角搜索项目名称
+        2.选择合适项目
+        3.使用git clone到本地
+    创建自己的仓库
+        1.右上角的+   下拉菜单 new repository
+        2.填写项目名称等信息
+        3.在本地连接github的远程仓库  即可进行push，pull等操作
+
+        ssh连接：使用ssh连接时需要秘钥配对（linux unix）
+
+            1.在某台主机生成秘钥
+            ssh-keygen
+
+            生成秘钥后存放在~/.ssh目录下
+           
+            2.进入~/.ssh目录下复制公钥（id_rsa.pub）内容
+           
+             cat  公钥（.pub）
+            复制
+           
+            3.进入github账号 右上角头像下拉  进入settings  选择SSH and GPG keys 
+                选择new ssh key 填写title  将复制的公钥内容填入文本框  点击add...  确定
+
+
+
+python包安装工具 ---pip
+    作用： 管理python的标准第三方软件
+    安装：  sudo apt-get install python3-pip
+
+
+常用命令：
+    1.安装软件  pip3 install  package（软件名称）
+
+    2.查看当前python软件包    pip3  list
+
+    3.搜索某个软件包： pip3 search 【name】   
+
+    4.查看某个软件包信息 ： pip3 show package
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
