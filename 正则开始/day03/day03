@@ -10,9 +10,10 @@
 
         git reset --hard commit_id
 
-            *commit_id用前七位即可  即退回到指定版本
+            *commit_id用前七位
 
-
+            * 选定commit_id表示HEAD指向选定的id而不是回复到指定的
+                commit_id版本
 
 
 
